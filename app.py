@@ -51,6 +51,7 @@ nutrient_options = [
     {"label": "Sugar", "value": "sugar"},
     {"label": "Carbs", "value": "carbs"}
 ]
+
 group_options = [
     {"label": "Diet Type", "value": "Diet_Type"},
     {"label": "Health Category", "value": "Category"},
@@ -95,9 +96,9 @@ app.layout = html.Div([
         
         # Tab 2: Nutrient Heatmap
         dcc.Tab(label="Nutrient Distribution", children=[
-    html.Div([
+            html.Div([
                 html.Label("Select Nutrient:"),
-        dcc.Dropdown(
+                dcc.Dropdown(
                     id='heatmap-nutrient-dropdown',
                     options=nutrient_options,
                     value='protein',
@@ -110,8 +111,8 @@ app.layout = html.Div([
         
         # Tab 3: Recipe Popularity Analysis
         dcc.Tab(label="Recipe Popularity", children=[
-                        html.Div([
-                            dcc.Graph(
+            html.Div([
+                dcc.Graph(
                     figure=go.Figure(
                         data=[go.Scatter(
                             x=df['minutes'],
@@ -120,20 +121,20 @@ app.layout = html.Div([
                             marker=dict(color='#2ecc71', size=8),
                             opacity=0.6
                         )]
-                                ).update_layout(
+                    ).update_layout(
                         title="Preparation Time vs Rating",
                         xaxis_title="Preparation Time (minutes)",
                         yaxis_title="Rating",
-                            height=600
-                        )
+                        height=600
                     )
+                )
             ])
         ]),
         
         # Tab 4: Health Score Analysis
         dcc.Tab(label="Health Score Analysis", children=[
-                html.Div([
-                    dcc.Graph(
+            html.Div([
+                dcc.Graph(
                     figure=go.Figure(
                         data=[go.Scatter(
                             x=df['Health_Score'],
@@ -149,13 +150,13 @@ app.layout = html.Div([
                             ),
                             opacity=0.6
                         )]
-                        ).update_layout(
+                    ).update_layout(
                         title="Health Score vs Rating",
                         xaxis_title="Health Score",
                         yaxis_title="Rating",
-                            height=600
-                        )
+                        height=600
                     )
+                )
             ])
         ])
     ])
@@ -196,23 +197,21 @@ def update_heatmap(nutrient):
 
 def create_all_nutrients_heatmap():
     nutrients = ["protein", "calories", "fat", "sugar", "carbs"]
-        fig = make_subplots(
+    fig = make_subplots(
         rows=2, cols=3,
-            subplot_titles=[f"{nut.title()}" for nut in nutrients],
+        subplot_titles=[f"{nut.title()}" for nut in nutrients],
         vertical_spacing=0.2
-        )
+    )
     
     for i, nutrient in enumerate(nutrients, 1):
-            pivot = df.pivot_table(
+        pivot = df.pivot_table(
             index='Diet_Type',
             columns='Category',
             values=nutrient,
             aggfunc='mean'
         ).fillna(0)
-        
         row = (i-1) // 3 + 1
         col = (i-1) % 3 + 1
-        
         fig.add_trace(
             go.Heatmap(
                 z=pivot.values,
@@ -225,9 +224,8 @@ def create_all_nutrients_heatmap():
             ),
             row=row, col=col
         )
-    
     fig.update_layout(height=800, title_text="All Nutrients Distribution")
-        return fig
+    return fig
 
 # Run server
 if __name__ == '__main__':
